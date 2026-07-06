@@ -19,10 +19,12 @@ export const list = asyncHandler(async (req: AuthRequest, res: Response) => {
     .select({
       id: categories.id, name: categories.name, description: categories.description,
       color: categories.color, createdAt: categories.createdAt,
-      productCount: sql<number>`(SELECT COUNT(*) FROM products WHERE products.category_id = ${categories.id})`,
+      productCount: sql<number>`COUNT(${products.id})`,
     })
     .from(categories)
+    .leftJoin(products, eq(products.categoryId, categories.id))
     .where(where)
+    .groupBy(categories.id)
     .orderBy(desc(categories.id));
   res.json(rows);
 });
