@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  warunk-pos:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: warunk-pos-app
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      - PORT=4000
+      - NODE_ENV=production
+      - JWT_SECRET=warunk_pos_super_secret_change_in_production_2026
+      - JWT_EXPIRES_IN=7d
+      - DATABASE_URL=/app/backend/data/warunk.db
+      - CLIENT_URL=http://localhost:8080
+    volumes:
+      # Named volumes for cross-platform data persistence
+      - warunk-data:/app/backend/data
+      - warunk-uploads:/app/backend/uploads
+      
+      # Optional: Uncomment if you prefer local directory mounts (bind mounts)
+      # - ./backend/data:/app/backend/data
+      # - ./backend/uploads:/app/backend/uploads
+
+volumes:
+  warunk-data:
+    driver: local
+  warunk-uploads:
+    driver: local
